@@ -4,24 +4,39 @@ import sklearn
 import torch.nn as nn
 from model import model
 
-def TrainingAlgoritm():
-    input_data, trues = torch.load('input_data.pt'), torch.load('trues')
-    training_model = model()
-    return None #Skal vel ikke returnere noe
+def TrainingAlgoritm(model, dataloader, num_epochs, device="cpu"):
+    '''
+    Takes inn model, data_loader (training set and validation set) and num_epochs.
+    '''
+    losses = []
 
-def LossFunc(y_pred:torch, y:torch)->float:
-    '''can use 
-    import torch
-    import torch.nn as nn
+    # Choosing loss function and optimizer
+    loss_func = nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
-    criterion = nn.BCEWithLogitsLoss()
-    
-    During training: loss = criterion(y_pred, y)'''
-    return None 
+    for epoch in range(num_epochs): #num of full pass through the entire training dataset
+        total_loss = 0.0 
 
-def get_data(filename: str)->torch: #Will likely not use like this, but just a start
-    data = torch.load(filename)
-    return data
+        for X_batch, y_batch in dataloader:
+            # Move data to device (GPU/CPU? figure out what to use, might be a problem for MAC (Synne))
+            X_batch, y_batch = X_batch.to(device), y_batch.to(device)
+
+            # Forward pass
+            y_pred = model(X_batch)
+            loss = loss_func(y_pred, y_batch)
+
+            # Backward pass
+            optimizer.zero_grad() 
+            loss.backward()
+            optimizer.step()
+
+            total_loss += loss.item()
+
+        avg_loss = total_loss / len(dataloader)
+        losses.append(avg_loss)
+
+
+
 
 
 ''' From chat '''
