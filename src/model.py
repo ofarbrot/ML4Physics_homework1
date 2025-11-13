@@ -11,12 +11,11 @@ is handled correctly
 
 class model:
     def __init__(self):
-        # Define network architecture directly here
-        # Adjust dimensions to match your training data
-        input_dim = 400  # for example, if M=20 → 20×20 = 400
+        M = 12
+        input_dim = M*M #(for linear layer)
         hidden_dim = 128
         
-        # Build a small neural network
+        # Neural network
         self.net = nn.Sequential(
             nn.Linear(input_dim, hidden_dim),
             nn.ReLU(),
@@ -38,8 +37,7 @@ class model:
             print("Warning: model_weights.pth not found, using random weights.")
     
     def pred(self, x):
-        # Flatten input if necessary (e.g., from (N, M, M) → (N, M*M))
-        if x.ndim > 2:
+        if x.ndim > 2: #flatten input
             x = x.view(x.size(0), -1)
         
         with torch.no_grad():

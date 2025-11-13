@@ -2,7 +2,7 @@ import torch
 import numpy as np
 import sklearn
 import torch.nn as nn
-from model import model
+#from .model import model
 
 def TrainingAlgoritm(model, dataloader, num_epochs, device="cpu"):
     '''
