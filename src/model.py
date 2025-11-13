@@ -63,36 +63,3 @@ class model(nn.Module):
         """
         with torch.no_grad():
             return torch.sigmoid(self.forward(x))
-
-
-
-'''
-Old:
-
-class model:
-    def __init__(self):
-        M = 12
-        input_dim = M*M #(for linear layer)
-        hidden_dim = 128
-        
-        # Neural network
-        self.net = nn.Sequential(
-            nn.Linear(input_dim, hidden_dim),
-            nn.ReLU(),
-            nn.Linear(hidden_dim, hidden_dim),
-            nn.ReLU(),
-            nn.Linear(hidden_dim, hidden_dim),
-            nn.ReLU(),
-            nn.Linear(hidden_dim, hidden_dim),
-            nn.ReLU(),
-            nn.Linear(hidden_dim, 1),
-            nn.Sigmoid()  # output in [0,1] #want 5 layers approx
-        )
-        
-        # Load pre-trained weights if you’ve trained the model already
-        try:
-            self.net.load_state_dict(torch.load("models/model_weights.pth", map_location=torch.device('cpu')))
-            self.net.eval()
-        except FileNotFoundError:
-            print("Warning: model_weights.pth not found, using random weights.")
-'''

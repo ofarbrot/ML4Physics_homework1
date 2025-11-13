@@ -1,10 +1,7 @@
 import torch
-import numpy as np
-import sklearn
 import torch.nn as nn
-#from .model import model
 
-def TrainingAlgoritm(model, dataloader, num_epochs, device="cpu"):
+def TrainingAlgorithm(model, dataloader, num_epochs, device="cpu"):
     '''
     Takes inn model, data_loader (training set and validation set) and num_epochs.
     '''
@@ -26,6 +23,7 @@ def TrainingAlgoritm(model, dataloader, num_epochs, device="cpu"):
             loss = loss_func(y_pred, y_batch)
 
             # Backward pass
+            '''
             optimizer.zero_grad() 
             loss.backward()
             optimizer.step()
@@ -34,7 +32,7 @@ def TrainingAlgoritm(model, dataloader, num_epochs, device="cpu"):
             logits = logits.unsqueeze(1)     # -> (N,1)
             y_batch = y_batch.unsqueeze(1)
             loss = loss_func(logits, y_batch)
-            '''
+            
 
             total_loss += loss.item()
 
@@ -42,6 +40,34 @@ def TrainingAlgoritm(model, dataloader, num_epochs, device="cpu"):
         losses.append(avg_loss)
 
     # Save weights
-    torch.save(model.state_dict(), "../models/model_weights.pth")
+    torch.save(model.state_dict(), "modells/model_weights.pth")
 
     return losses
+
+def evaluate(model, val_loader, device="cpu"):
+    model.eval()  # evaluation mode
+    loss_fn = nn.BCELoss()
+
+    total_loss = 0.0
+    correct = 0
+    total = 0
+
+    with torch.no_grad():
+        for X_batch, y_batch in val_loader:
+            X_batch = X_batch.to(device).float()
+            y_batch = y_batch.to(device).float()
+
+            preds = model.pred(X_batch).squeeze()
+
+            loss = loss_fn(preds, y_batch)
+            total_loss += loss.item()
+
+            # thresholding for accuracy
+            predicted_labels = (preds >= 0.5).long()
+            correct += (predicted_labels == y_batch.long()).sum().item()
+            total += y_batch.size(0)
+
+    avg_loss = total_loss / len(val_loader)
+    accuracy = correct / total
+
+    return avg_loss, accuracy

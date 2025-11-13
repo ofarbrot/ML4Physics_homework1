@@ -1,4 +1,5 @@
 import os
+os.chdir("..")
 import torch
 from typing import Tuple
 from torch.utils.data import TensorDataset, DataLoader, random_split
