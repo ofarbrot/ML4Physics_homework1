@@ -43,3 +43,24 @@ class model:
         with torch.no_grad():
             y_pred = self.net(x).squeeze()  # shape (N,)
         return y_pred
+    
+    '''
+    class IsingCNN(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.conv1 = nn.Conv2d(1, 16, kernel_size=3, padding=1)  # output: 16x12x12
+        self.conv2 = nn.Conv2d(16, 32, kernel_size=3, padding=1) # output: 32x12x12
+        self.pool = nn.AvgPool2d(2)                               # output: 32x6x6
+        self.fc1 = nn.Linear(32*6*6, 64)
+        self.fc2 = nn.Linear(64, 1)
+
+    def forward(self, x):
+        x = x.unsqueeze(1)  # shape: (N, 1, 12, 12)
+        x = F.relu(self.conv1(x))
+        x = self.pool(F.relu(self.conv2(x)))
+        x = x.view(x.size(0), -1)
+        x = F.relu(self.fc1(x))
+        x = torch.sigmoid(self.fc2(x)).squeeze(1)
+        return x
+
+    '''
