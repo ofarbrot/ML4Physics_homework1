@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import os
 
 class model(nn.Module):
     def __init__(self):
@@ -24,8 +25,27 @@ class model(nn.Module):
             nn.Linear(64, 1),
             #nn.Sigmoid()  # output in [0,1]
         )
-
+        #Try to make it work saving the weights: 
         # Try loading pretrained weights (optional)
+        try:
+            # Build an absolute path to the weights file
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            weights_path = os.path.join(current_dir, "...", "modells", "model_weights.pth")
+
+            # Normalize the path (makes it OS-safe)
+            weights_path = os.path.normpath(weights_path)
+
+            # Load and apply the weights
+            state_dict = torch.load(weights_path, map_location=torch.device("cpu"))
+            self.load_state_dict(state_dict)
+            self.eval()
+
+            print(f"Loaded pretrained weights from: {weights_path}")
+
+        except FileNotFoundError:
+            print(" Warning: model_weights.pth not found, using random weights.")
+
+        """# Try loading pretrained weights (optional)
         try:
             state_dict = torch.load("models/model_weights.pth",
                                     map_location=torch.device("cpu"))
@@ -33,6 +53,7 @@ class model(nn.Module):
             self.eval()
         except FileNotFoundError:
             print("Warning: model_weights.pth not found, using random weights.")
+"""
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
