@@ -84,3 +84,6 @@ class model(nn.Module):
         """
         with torch.no_grad():
             return torch.sigmoid(self.forward(x))
+
+
+# hi
