@@ -12,16 +12,16 @@ class model(nn.Module):
         # Convolutional part
         self.conv = nn.Sequential(
             nn.Conv2d(1, 16, kernel_size=3, padding=1),  # (N,1,12,12) -> (N,16,12,12)
-            nn.ReLU(),
+            nn.LeakyReLU(0.1), #nn.ReLU(), #nn.leakyReL(1.0)
             nn.Conv2d(16, 32, kernel_size=3, padding=1), # (N,16,12,12) -> (N,32,12,12)
-            nn.ReLU(),
+            nn.LeakyReLU(0.1),#nn.ReLU(),
             nn.AvgPool2d(2)                              # (N,32,12,12) -> (N,32,6,6)
         )
 
         # Fully connected part
         self.fc = nn.Sequential(
             nn.Linear(32 * 6 * 6, 64),
-            nn.ReLU(),
+            nn.LeakyReLU(0.1),#nn.ReLU(),
             nn.Linear(64, 1),
             #nn.Sigmoid()  # output in [0,1]
         )
@@ -30,7 +30,7 @@ class model(nn.Module):
         try:
             # Build an absolute path to the weights file
             current_dir = os.path.dirname(os.path.abspath(__file__))
-            weights_path = os.path.join(current_dir, "...", "models", "model_weights.pth")
+            weights_path = os.path.join(current_dir, "..", "models", "model_weights.pth")
 
             # Normalize the path (makes it OS-safe)
             weights_path = os.path.normpath(weights_path)
@@ -82,5 +82,6 @@ class model(nn.Module):
         Required by the platform: takes input like training data and
         returns 1D tensor of predictions.
         """
+        x = x.to(torch.float32) 
         with torch.no_grad():
             return torch.sigmoid(self.forward(x))
