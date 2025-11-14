@@ -18,7 +18,7 @@ def TrainingAlgorithm(model, dataloader, num_epochs, device="cpu"):
         total_loss = 0.0 
 
         for X_batch, y_batch in dataloader:
-            # Move data to device (GPU/CPU? figure out what to use, might be a problem for MAC (Synne))
+            # Move data to device
             X_batch, y_batch = X_batch.to(device), y_batch.to(device).float()
 
             # Forward pass
