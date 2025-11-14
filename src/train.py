@@ -5,6 +5,9 @@ def TrainingAlgorithm(model, dataloader, num_epochs, device="cpu"):
     '''
     Takes inn model, data_loader (training set and validation set) and num_epochs.
     '''
+    model.to(device)
+    model.train()
+
     losses = []
 
     # Choosing loss function and optimizer
@@ -19,28 +22,24 @@ def TrainingAlgorithm(model, dataloader, num_epochs, device="cpu"):
             X_batch, y_batch = X_batch.to(device), y_batch.to(device).float()
 
             # Forward pass
+            logits = model(X_batch)
+            loss = loss_func(logits, y_batch)
+            
             y_pred = model(X_batch)
             loss = loss_func(y_pred, y_batch)
 
             # Backward pass
-            '''
-            optimizer.zero_grad() 
+            optimizer.zero_grad()
             loss.backward()
-            optimizer.step()
-            '''
-            logits = model(X_batch)          # shape (N,)
-            logits = logits.unsqueeze(1)     # -> (N,1)
-            y_batch = y_batch.unsqueeze(1)
-            loss = loss_func(logits, y_batch)
+            optimizer.step()        
             
-
             total_loss += loss.item()
 
         avg_loss = total_loss / len(dataloader)
         losses.append(avg_loss)
 
     # Save weights
-    torch.save(model.state_dict(), "modells/model_weights.pth")
+    torch.save(model.state_dict(), "models/model_weights.pth")
 
     return losses
 

@@ -30,7 +30,7 @@ class model(nn.Module):
         try:
             # Build an absolute path to the weights file
             current_dir = os.path.dirname(os.path.abspath(__file__))
-            weights_path = os.path.join(current_dir, "...", "modells", "model_weights.pth")
+            weights_path = os.path.join(current_dir, "...", "models", "model_weights.pth")
 
             # Normalize the path (makes it OS-safe)
             weights_path = os.path.normpath(weights_path)
