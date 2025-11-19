@@ -11,49 +11,19 @@ class model(nn.Module):
         # Convolutional part
         self.conv = nn.Sequential(
             nn.Conv2d(1, 16, kernel_size=3, padding=1),  # (N,1,12,12) -> (N,16,12,12)
-            nn.LeakyReLU(0.1), #nn.ReLU(), #nn.leakyReL(1.0)
+            nn.LeakyReLU(0.1),
             nn.Conv2d(16, 32, kernel_size=3, padding=1), # (N,16,12,12) -> (N,32,12,12)
-            nn.LeakyReLU(0.1),#nn.ReLU(),
+            nn.LeakyReLU(0.1),
             nn.AvgPool2d(2)                              # (N,32,12,12) -> (N,32,6,6)
         )
 
         # Fully connected part
         self.fc = nn.Sequential(
             nn.Linear(32 * 6 * 6, 64),
-            nn.LeakyReLU(0.1),#nn.ReLU(),
+            nn.LeakyReLU(0.1),
             nn.Dropout(0.5),
             nn.Linear(64, 1)
         )
-        
-        '''self.conv = nn.Sequential(
-            nn.Conv2d(1, 8, kernel_size=3, padding=1),   # 1 -> 8
-            nn.LeakyReLU(0.1),
-            nn.Conv2d(8, 16, kernel_size=3, padding=1),  # 8 -> 16
-            nn.LeakyReLU(0.1),
-            nn.AvgPool2d(2)                              # 12x12 -> 6x6
-        )
-
-        self.fc = nn.Sequential(
-            nn.Linear(16 * 6 * 6, 32),
-            nn.LeakyReLU(0.1),
-            nn.Dropout(0.7),
-            nn.Linear(16, 1) (32, 1)
-        )'''
-
-        '''self.conv = nn.Sequential(
-            nn.Conv2d(1, 8, kernel_size=3, padding=1),
-            nn.LeakyReLU(0.1),
-            nn.Conv2d(8, 16, kernel_size=3, padding=1),
-            nn.LeakyReLU(0.1),
-            nn.AvgPool2d(2)   # -> (N,16,6,6)
-        )
-
-        self.fc = nn.Sequential(
-            nn.Linear(16 * 6 * 6, 16),  # 576 -> 16  (~9k param)
-            nn.LeakyReLU(0.1),
-            nn.Dropout(0.5),
-            nn.Linear(16, 1)
-        )'''
 
         # --- WEIGHT LOADING ---
         if load_weights:
