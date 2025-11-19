@@ -26,15 +26,12 @@ class model(nn.Module):
         )
 
         # --- WEIGHT LOADING ---
-        '''if load_weights: Should move weights to same folder ac model and use this code
+        if load_weights:
             try:
-                # Folder path where THIS python file lives
                 path_to_py = os.path.dirname(__file__)
 
-                # Weight file assumed to be in the *same folder* as model.py
                 weight_path = os.path.join(path_to_py, "model_weights.pth")
 
-                # Load state dict
                 state = torch.load(weight_path, map_location="cpu")
                 self.load_state_dict(state)
                 self.eval()
@@ -42,26 +39,7 @@ class model(nn.Module):
                 print(f"Loaded pretrained weights from: {weight_path}")
 
             except FileNotFoundError:
-                print("Warning: model_weights.pth not found, using random weights.")'''
-        
-        if load_weights:        
-            try:
-                # Build an absolute path to the weights file
-                current_dir = os.path.dirname(os.path.abspath(__file__))
-                weights_path = os.path.join(current_dir, "..", "models", "model_weights.pth")
-
-                # Normalize the path (makes it OS-safe)
-                weights_path = os.path.normpath(weights_path)
-
-                # Load and apply the weights
-                state_dict = torch.load(weights_path, map_location=torch.device("cpu"))
-                self.load_state_dict(state_dict)
-                self.eval()
-
-                print(f"Loaded pretrained weights from: {weights_path}")
-
-            except FileNotFoundError:
-                print(" Warning: model_weights.pth not found, using random weights.")
+                print("Warning: model_weights.pth not found, using random weights.")
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         # Ensure shape (N,1,12,12)

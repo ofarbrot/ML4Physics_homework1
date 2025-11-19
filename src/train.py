@@ -80,6 +80,6 @@ def TrainingAlgorithm(model, train_loader, val_loader, num_epochs, device="cpu")
               f"Val Acc: {val_acc:.4f}")'''
 
     # -------- SAVE WEIGHTS --------
-    torch.save(model.state_dict(), "models/model_weights.pth")
+    torch.save(model.state_dict(), "src/model_weights.pth")
 
     return train_losses, eval_losses, eval_accuracies
