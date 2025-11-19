@@ -30,7 +30,7 @@ def TrainingAlgorithm(model, train_loader, val_loader, num_epochs, device="cpu")
         total_train_loss = 0.0
 
         for X_batch, y_batch in train_loader:
-            X_batch = X_batch.to(device)
+            X_batch = X_batch.to(device).float()
             y_batch = y_batch.to(device).float()
 
             # Forward pass
@@ -55,7 +55,7 @@ def TrainingAlgorithm(model, train_loader, val_loader, num_epochs, device="cpu")
 
         with torch.no_grad():
             for X_val, y_val in val_loader:
-                X_val = X_val.to(device)
+                X_val = X_val.to(device).float()
                 y_val = y_val.to(device).float()
 
                 logits_val = model(X_val)
@@ -73,11 +73,6 @@ def TrainingAlgorithm(model, train_loader, val_loader, num_epochs, device="cpu")
         targets_cat = torch.cat(all_targets)
         val_acc = accuracy(logits_cat, targets_cat)
         eval_accuracies.append(val_acc)
-
-        '''print(f"Epoch {epoch+1}/{num_epochs} | "
-              f"Train Loss: {avg_train_loss:.4f} | "
-              f"Val Loss: {avg_eval_loss:.4f} | "
-              f"Val Acc: {val_acc:.4f}")'''
 
     # -------- SAVE WEIGHTS --------
     torch.save(model.state_dict(), "src/model_weights.pth")
