@@ -7,7 +7,7 @@ def accuracy(logits, targets):
     return (preds == targets).float().mean().item()
 
 
-def TrainingAlgorithm(model, train_loader, val_loader, num_epochs, device="cpu"):
+def TrainingAlgorithm(model, train_loader, val_loader, num_epochs, patience=10, device="cpu"):
     """
     Train the model on train_loader and evaluate on eval_loader.
     Return lists train_losses: avarage trainingloss per epoch, and 
@@ -22,6 +22,11 @@ def TrainingAlgorithm(model, train_loader, val_loader, num_epochs, device="cpu")
     # Loss-function og optimizer
     loss_func = nn.BCEWithLogitsLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+
+    best_val_loss = float("inf")
+    best_state_dict = None
+    best_epoch = -1
+    epochs_no_improve = 0
 
     for epoch in range(num_epochs):
 
@@ -74,7 +79,33 @@ def TrainingAlgorithm(model, train_loader, val_loader, num_epochs, device="cpu")
         val_acc = accuracy(logits_cat, targets_cat)
         eval_accuracies.append(val_acc)
 
+        # -------- EARLY STOPPING --------
+        if avg_eval_loss < best_val_loss:
+            best_val_loss = avg_eval_loss
+            best_state_dict = model.state_dict()  
+            best_epoch = epoch
+            epochs_no_improve = 0
+        else:
+            epochs_no_improve += 1
+
+        print(f"Epoch {epoch+1}/{num_epochs} "
+              f"- train loss: {avg_train_loss:.4f} "
+              f"- val loss: {avg_eval_loss:.4f} "
+              f"- val acc: {val_acc:.4f}")
+
+        if epochs_no_improve >= patience:
+            print(f"Early stopping triggered at epoch {epoch+1}")
+            break
+
     # -------- SAVE WEIGHTS --------
-    torch.save(model.state_dict(), "src/model_weights.pth")
+    if best_state_dict is not None:
+        torch.save(best_state_dict, "src/model_weights.pth")
+    else:
+        torch.save(model.state_dict(), "src/model_weights.pth")
+        print("Something wrong")
+
+    train_losses = train_losses[:best_epoch+1]
+    eval_losses = eval_losses[:best_epoch+1]
+    eval_accuracies = eval_accuracies[:best_epoch+1]
 
     return train_losses, eval_losses, eval_accuracies
