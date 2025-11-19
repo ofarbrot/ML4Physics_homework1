@@ -21,6 +21,7 @@ class model(nn.Module):
         self.fc = nn.Sequential(
             nn.Linear(32 * 6 * 6, 64),
             nn.LeakyReLU(0.1),#nn.ReLU(),
+            nn.Dropout(0.5),
             nn.Linear(64, 1),
             #nn.Sigmoid()  # output in [0,1]
         )

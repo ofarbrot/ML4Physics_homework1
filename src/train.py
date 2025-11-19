@@ -21,7 +21,7 @@ def TrainingAlgorithm(model, train_loader, val_loader, num_epochs, device="cpu")
 
     # Loss-function og optimizer
     loss_func = nn.BCEWithLogitsLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 
     for epoch in range(num_epochs):
 
@@ -30,7 +30,7 @@ def TrainingAlgorithm(model, train_loader, val_loader, num_epochs, device="cpu")
         total_train_loss = 0.0
 
         for X_batch, y_batch in train_loader:
-            X_batch = X_batch.to(device)
+            X_batch = X_batch.to(device).float()
             y_batch = y_batch.to(device).float()
 
             # Forward pass
@@ -55,7 +55,7 @@ def TrainingAlgorithm(model, train_loader, val_loader, num_epochs, device="cpu")
 
         with torch.no_grad():
             for X_val, y_val in val_loader:
-                X_val = X_val.to(device)
+                X_val = X_val.to(device).float()
                 y_val = y_val.to(device).float()
 
                 logits_val = model(X_val)
